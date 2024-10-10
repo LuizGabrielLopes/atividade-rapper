@@ -49,9 +49,15 @@ suspeitosRoutes.get("/", (req, res) => {
 //Rota para criar um novo suspeito
 suspeitosRoutes.post("/", (req, res) => {
     const { nome, idade, descricao, envolvimento } = req.body;
-    if (!nome || !Number.isInteger(idade)) {
-        return res.status(400).json({
-            message: "O nome é obrigatório e a idade deve ser um número inteiro"
+    if (!Number.isInteger(idade)) {
+        return res.status(400).send({
+            message: "A idade deve ser um número inteiro"
+        })
+    }
+
+    if (!nome || !idade || !envolvimento) {
+        return res.status(400).send({
+            message: "Os campos nome, idade e envolvimento são obrigatórios"
         })
     }
 
@@ -70,6 +76,22 @@ suspeitosRoutes.post("/", (req, res) => {
     }
     suspeitos.push(novoSuspeito)
     return res.status(201).send({ suspeitos })
+});
+
+//Rota para buscar um elemento específico do array suspeitos pelo id
+suspeitosRoutes.get("/:id", (req, res) => {
+    const { id } = req.params
+
+    const suspeito = suspeitos.find((suspect) =>
+        suspect.id === Number(id));
+
+    console.log(suspeito);
+
+    if (!suspeito) {
+        return res.status(404).send({ message: "Suspeito não encontrado!" });
+    }
+
+    return res.status(200).send(suspeito);
 });
 
 export default suspeitosRoutes;
