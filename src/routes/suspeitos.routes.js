@@ -94,4 +94,38 @@ suspeitosRoutes.get("/:id", (req, res) => {
     return res.status(200).send(suspeito);
 });
 
+
+// Rota para atualizar um suspeito pelo id
+suspeitosRoutes.put("/:id", (req, res) => {
+    const { id } = req.params;
+    const { nome, idade, descricao, envolvimento } = req.body;
+  
+    // Busca um suspeito pelo id no array de suspeitos
+    const suspeito = suspeitos.find((suspect) => suspect.id == id);
+  
+    // Validação dos campos obrigatórios
+    if (!nome || !idade || !envolvimento) {
+        return res.status(400).send({
+            message: "Os campos nome, idade e envolvimento são obrigatórios"
+        })
+    }
+  
+    // Validação de existência do envolvimento
+    if (envolvimento != "sim" && envolvimento != "não") {
+      return res.status(400).send({
+        message: "Digite 'sim' ou 'não'!",
+      });
+    }
+  
+    suspeito.nome = nome;
+    suspeito.idade = idade;
+    suspeito.descricao = descricao;
+    suspeito.envolvimento = envolvimento;
+  
+    return res.status(200).json({
+      message: "Suspeito atualizado com sucesso!",
+      suspeito,
+    });
+  });
+
 export default suspeitosRoutes;
